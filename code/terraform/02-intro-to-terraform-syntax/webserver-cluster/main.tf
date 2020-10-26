@@ -53,6 +53,7 @@ resource "aws_autoscaling_group" "example" {
   vpc_zone_identifier  = data.aws_subnet_ids.default.ids
 
   target_group_arns = [aws_lb_target_group.asg.arn]
+
   # You should also update the health_check_type to "ELB". 
   # The default health_check_type is "EC2", which is a minimal health check that considers an 
   # Instance unhealthy only if the AWS hypervisor says the VM is completely downor unreachable. 
@@ -148,7 +149,6 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-
 # Next, you need to create a target group for your ASG using the aws_lb_target_group resource
 # Note that this target group will health check your Instances by periodically sending an HTTP 
 # request to each Instanceand will consider the Instance “healthy” only if the Instance returns a 
@@ -179,6 +179,8 @@ resource "aws_lb_target_group" "asg" {
     unhealthy_threshold = 2
   }
 }
+
+# code adds a listener rule that send requests that match any path  to the target group that contains your ASG
 
 resource "aws_lb_listener_rule" "asg" {
   listener_arn = aws_lb_listener.http.arn
